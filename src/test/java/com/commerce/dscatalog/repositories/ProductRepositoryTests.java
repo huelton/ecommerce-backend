@@ -19,38 +19,38 @@ public class ProductRepositoryTests {
     private long countTotalProducts;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         existingId = 1L;
         notExistingId = 1000L;
         countTotalProducts = 25;
     }
 
     @Test
-    public void saveShouldPersistWithAutoIncrementWhenidIsNull(){
-         Product product = Factory.createProduct();
-         product.setId(null);
+    public void saveShouldPersistWithAutoIncrementWhenidIsNull() {
+        Product product = Factory.createProduct();
+        product.setId(null);
 
-         product = productRepository.save(product);
-         Assertions.assertNotNull(product.getId());
-         Assertions.assertEquals(countTotalProducts+1, product.getId());
+        product = productRepository.save(product);
+        Assertions.assertNotNull(product.getId());
+        Assertions.assertEquals(countTotalProducts + 1, product.getId());
     }
 
     @Test
-    public void findShouldReturnProductWhenIdExists(){
-        Optional<Product> result =  productRepository.findById(existingId);
+    public void findShouldReturnProductWhenIdExists() {
+        Optional<Product> result = productRepository.findById(existingId);
         Assertions.assertTrue(result.isPresent());
     }
 
     @Test
-    public void findShouldNotReturnProductWhenIdNotExists(){
-        Optional<Product> result =  productRepository.findById(notExistingId);
+    public void findShouldNotReturnProductWhenIdNotExists() {
+        Optional<Product> result = productRepository.findById(notExistingId);
         Assertions.assertTrue(result.isEmpty());
     }
 
     @Test
-    public void deleteShouldDeleteObjectWhenidExists(){
+    public void deleteShouldDeleteObjectWhenidExists() {
         productRepository.deleteById(existingId);
-        Optional<Product> result =  productRepository.findById(existingId);
+        Optional<Product> result = productRepository.findById(existingId);
         Assertions.assertFalse(result.isPresent());
     }
 }
