@@ -1,6 +1,8 @@
 package com.commerce.dscatalog.services;
 
+import com.commerce.dscatalog.dto.CategoryDTO;
 import com.commerce.dscatalog.dto.ProductDTO;
+import com.commerce.dscatalog.entities.Category;
 import com.commerce.dscatalog.entities.Product;
 import com.commerce.dscatalog.repositories.CategoryRepository;
 import com.commerce.dscatalog.repositories.ProductRepository;
@@ -9,8 +11,8 @@ import com.commerce.dscatalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -30,91 +31,86 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional
-public class ProductServiceTests {
+public class CategoryServiceTests {
 
     @InjectMocks
-    private ProductService productService;
-    @Mock
-    private ProductRepository productRepository;
+    private CategoryService categoryService;
     @Mock
     private CategoryRepository categoryRepository;
-    private PageImpl<Product> page;
+    private PageImpl<Category> page;
     private long existingId;
     private long notExistingId;
     private long dependentId;
-    private Product product;
-    private ProductDTO productDTO;
+    private Category category;
+    private CategoryDTO categoryDTO;
 
     @BeforeEach
     void setup() {
         existingId = 1L;
         notExistingId = 1000L;
         dependentId = 4;
-        product = Factory.createProduct();
-        productDTO = Factory.createProductDTO();
-        page = new PageImpl<>(List.of(product));
+        category = Factory.createCategory();
+        categoryDTO = Factory.createCategoryDTO();
+        page = new PageImpl<>(List.of(category));
 
-        when(productRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
-        when(productRepository.save(ArgumentMatchers.any())).thenReturn(product);
-        when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
-        when(productRepository.findById(notExistingId)).thenReturn(Optional.empty());
-        doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(dependentId);
+        when(categoryRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+        when(categoryRepository.save(ArgumentMatchers.any())).thenReturn(category);
+        when(categoryRepository.findById(existingId)).thenReturn(Optional.of(category));
+        when(categoryRepository.findById(notExistingId)).thenReturn(Optional.empty());
+        doThrow(DataIntegrityViolationException.class).when(categoryRepository).deleteById(dependentId);
 
-        when(productRepository.existsById(existingId)).thenReturn(true);
-        when(productRepository.existsById(notExistingId)).thenReturn(false);
-        when(productRepository.existsById(dependentId)).thenReturn(true);
-
-        //when(productService.update(existingId,ArgumentMatchers.any())).thenReturn(productDTO);
-        //when(productService.update(notExistingId,ArgumentMatchers.any())).thenThrow(ResourceNotFoundException.class);
+        when(categoryRepository.existsById(existingId)).thenReturn(true);
+        when(categoryRepository.existsById(notExistingId)).thenReturn(false);
+        when(categoryRepository.existsById(dependentId)).thenReturn(true);
     }
 
     @Test
     public void findAllPageShouldReturnPage() {
         Pageable pageable = PageRequest.of(0,10);
-        Page<ProductDTO> result = productService.findAllPaged(pageable);
+        Page<CategoryDTO> result = categoryService.findAllPaged(pageable);
         assertNotNull(result);
-        verify(productRepository).findAll(pageable);
+        verify(categoryRepository).findAll(pageable);
     }
 
     @Test
     public void findByIdShouldReturnProductDTO() {
-        ProductDTO result = productService.findById(existingId);
+        CategoryDTO result = categoryService.findById(existingId);
         assertNotNull(result);
-        verify(productRepository).findById(existingId);
+        verify(categoryRepository).findById(existingId);
     }
 
     @Test
     public void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
         assertThrows(ResourceNotFoundException.class, () -> {
-            productService.findById(notExistingId);
+            categoryService.findById(notExistingId);
         });
     }
 
     @Test
     public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
         assertThrows(ResourceNotFoundException.class, () -> {
-            productService.delete(notExistingId);
+            categoryService.delete(notExistingId);
         });
     }
 
     @Test
     public void deleteShouldNotNothingWhenIdExists() {
         Assertions.assertDoesNotThrow(() -> {
-            productService.delete(existingId);
+            categoryService.delete(existingId);
         });
     }
 
     @Test
     public void findAllPageShouldReturnPageWhenPage0Size10() {
         Pageable pageable = PageRequest.of(0,10);
-        Page<ProductDTO> result = productService.findAllPaged(pageable);
+        Page<CategoryDTO> result = categoryService.findAllPaged(pageable);
 
         assertFalse(result.isEmpty());
         assertNotNull(result);
         assertEquals(0, result.getNumber());
         assertTrue(true, String.valueOf(result.isFirst()));
         assertEquals(1, result.getTotalElements());
-        verify(productRepository).findAll(pageable);
+        verify(categoryRepository).findAll(pageable);
     }
 
 }

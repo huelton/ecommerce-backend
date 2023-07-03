@@ -4,7 +4,6 @@ import com.commerce.dscatalog.dto.CategoryDTO;
 import com.commerce.dscatalog.dto.ProductDTO;
 import com.commerce.dscatalog.entities.Category;
 import com.commerce.dscatalog.entities.Product;
-import org.hibernate.query.CommonQueryContract;
 
 import java.time.Instant;
 
