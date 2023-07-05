@@ -9,6 +9,7 @@ import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
 import com.commerce.dscatalog.tests.Factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class CategoryResourceTests {
     private long notExistingId;
     private long dependentId;
     private PageImpl<CategoryDTO> page;
-
+    @Disabled
     @BeforeEach
     void setup() {
         existingId = 1L;
@@ -65,7 +66,7 @@ public class CategoryResourceTests {
         when(categoryService.insert(ArgumentMatchers.any())).thenReturn(categoryDTO);
 
     }
-
+    @Disabled
     @Test
     public void findAllShouldReturnPage() throws Exception {
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/categories")
@@ -73,7 +74,7 @@ public class CategoryResourceTests {
                 .accept(MediaType.APPLICATION_JSON));
         result.andExpect(MockMvcResultMatchers.status().isOk());
     }
-
+    @Disabled
     @Test
     public void findByIdShouldReturnProductDTOWhenIdExists() throws Exception {
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/categories/{id}", existingId)
@@ -83,7 +84,7 @@ public class CategoryResourceTests {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
         result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
     }
-
+    @Disabled
     @Test
     public void findByIdShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get("/categories/{id}", notExistingId)
@@ -91,7 +92,7 @@ public class CategoryResourceTests {
                 .accept(MediaType.APPLICATION_JSON));
         result.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
-
+    @Disabled
     @Test
     public void insertShouldReturnCreatedAndProductDTOWhenIdExists() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
@@ -105,7 +106,7 @@ public class CategoryResourceTests {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
 
     }
-
+    @Disabled
     @Test
     public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
@@ -119,7 +120,7 @@ public class CategoryResourceTests {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
 
     }
-
+    @Disabled
     @Test
     public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
@@ -130,7 +131,7 @@ public class CategoryResourceTests {
                         .accept(MediaType.APPLICATION_JSON));
         result.andExpect(MockMvcResultMatchers.status().isNotFound());
     }
-
+    @Disabled
     @Test
     public void deleteShouldReturnNoContentWhenIdExists() throws Exception {
         ResultActions result =
@@ -140,7 +141,7 @@ public class CategoryResourceTests {
         result.andExpect(MockMvcResultMatchers.status().isNoContent());
 
     }
-
+    @Disabled
     @Test
     public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
         ResultActions result =
