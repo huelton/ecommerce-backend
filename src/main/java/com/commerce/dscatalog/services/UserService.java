@@ -1,18 +1,7 @@
 package com.commerce.dscatalog.services;
 
-import com.commerce.dscatalog.dto.CategoryDTO;
-import com.commerce.dscatalog.dto.RoleDTO;
-import com.commerce.dscatalog.dto.UserDTO;
-import com.commerce.dscatalog.dto.UserInsertDTO;
-import com.commerce.dscatalog.entities.Category;
-import com.commerce.dscatalog.entities.Role;
-import com.commerce.dscatalog.entities.User;
-import com.commerce.dscatalog.repositories.CategoryRepository;
-import com.commerce.dscatalog.repositories.RoleRepository;
-import com.commerce.dscatalog.repositories.UserRepository;
-import com.commerce.dscatalog.services.exceptions.DatabaseException;
-import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -21,7 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.commerce.dscatalog.dto.RoleDTO;
+import com.commerce.dscatalog.dto.UserDTO;
+import com.commerce.dscatalog.dto.UserInsertDTO;
+import com.commerce.dscatalog.dto.UserUpdateDTO;
+import com.commerce.dscatalog.entities.Role;
+import com.commerce.dscatalog.entities.User;
+import com.commerce.dscatalog.repositories.RoleRepository;
+import com.commerce.dscatalog.repositories.UserRepository;
+import com.commerce.dscatalog.services.exceptions.DatabaseException;
+import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UserService {
@@ -54,7 +54,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(Long id, UserDTO dto) {
+    public UserDTO update(Long id, UserUpdateDTO dto) {
         try {
             User entity = userRepository.getReferenceById(id);
             copyDtoToEntity(dto, entity);
@@ -89,4 +89,5 @@ public class UserService {
             entity.getRoles().add(role);
         }
     }
+    
 }
