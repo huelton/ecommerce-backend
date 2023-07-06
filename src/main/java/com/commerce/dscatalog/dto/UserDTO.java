@@ -1,21 +1,27 @@
 package com.commerce.dscatalog.dto;
 
-import com.commerce.dscatalog.entities.Category;
-import com.commerce.dscatalog.entities.Product;
-import com.commerce.dscatalog.entities.Role;
-import com.commerce.dscatalog.entities.User;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.commerce.dscatalog.entities.User;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    
+    @NotBlank(message = "Campo Obrigatorio")
     private String firstName;
+    
     private String lastName;
+    
+    @Email(message = "Favor entrar com email valido")
     private String email;
+    
     Set<RoleDTO> roles = new HashSet<>();
 
     public UserDTO(){}
