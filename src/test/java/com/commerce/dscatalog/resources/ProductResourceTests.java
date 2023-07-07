@@ -1,6 +1,7 @@
 package com.commerce.dscatalog.resources;
 
 import com.commerce.dscatalog.dto.ProductDTO;
+import com.commerce.dscatalog.entities.projections.ProductProjection;
 import com.commerce.dscatalog.services.ProductService;
 import com.commerce.dscatalog.services.exceptions.DatabaseException;
 import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -33,6 +34,7 @@ public class ProductResourceTests {
     @MockBean
     private ProductService productService;
     private ProductDTO productDTO;
+    private ProductProjection productProjection;
     @Autowired
     private ObjectMapper objectMapper;
     private long existingId;
@@ -48,7 +50,7 @@ public class ProductResourceTests {
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
 
-        when(productService.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
+        when(productService.findAllPaged(ArgumentMatchers.any(),ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(page);
 
         when(productService.findById(existingId)).thenReturn(productDTO);
         when(productService.findById(notExistingId)).thenThrow(ResourceNotFoundException.class);

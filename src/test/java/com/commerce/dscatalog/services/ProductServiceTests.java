@@ -1,16 +1,22 @@
 package com.commerce.dscatalog.services;
 
-import com.commerce.dscatalog.dto.ProductDTO;
-import com.commerce.dscatalog.entities.Product;
-import com.commerce.dscatalog.repositories.CategoryRepository;
-import com.commerce.dscatalog.repositories.ProductRepository;
-import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
-import com.commerce.dscatalog.tests.Factory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,14 +24,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.commerce.dscatalog.dto.ProductDTO;
+import com.commerce.dscatalog.entities.Product;
+import com.commerce.dscatalog.repositories.CategoryRepository;
+import com.commerce.dscatalog.repositories.ProductRepository;
+import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.commerce.dscatalog.tests.Factory;
 
 
 @SpringBootTest
@@ -71,7 +77,7 @@ public class ProductServiceTests {
     @Test
     public void findAllPageShouldReturnPage() {
         Pageable pageable = PageRequest.of(0,10);
-        Page<ProductDTO> result = productService.findAllPaged(pageable);
+        Page<ProductDTO> result = productService.findAllPaged(ArgumentMatchers.any(),ArgumentMatchers.any(),pageable);
         assertNotNull(result);
         verify(productRepository).findAll(pageable);
     }
@@ -107,7 +113,7 @@ public class ProductServiceTests {
     @Test
     public void findAllPageShouldReturnPageWhenPage0Size10() {
         Pageable pageable = PageRequest.of(0,10);
-        Page<ProductDTO> result = productService.findAllPaged(pageable);
+        Page<ProductDTO> result = productService.findAllPaged(ArgumentMatchers.any(),ArgumentMatchers.any(), pageable);
 
         assertFalse(result.isEmpty());
         assertNotNull(result);
