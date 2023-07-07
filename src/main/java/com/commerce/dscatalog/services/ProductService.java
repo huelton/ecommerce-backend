@@ -1,5 +1,6 @@
 package com.commerce.dscatalog.services;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import com.commerce.dscatalog.dto.CategoryDTO;
 import com.commerce.dscatalog.dto.ProductDTO;
 import com.commerce.dscatalog.entities.Category;
 import com.commerce.dscatalog.entities.Product;
+import com.commerce.dscatalog.entities.projections.ProductProjection;
 import com.commerce.dscatalog.repositories.CategoryRepository;
 import com.commerce.dscatalog.repositories.ProductRepository;
 import com.commerce.dscatalog.services.exceptions.DatabaseException;
@@ -89,4 +91,12 @@ public class ProductService {
             entity.getCategories().add(category);
         }
     }
+    
+    
+    @Transactional(readOnly = true)
+    public Page<ProductProjection> testQuery(Pageable pageable) {
+        return repository.searchProducts(Arrays.asList(1L,3L), "ma", pageable);
+    }
+    
+    
 }

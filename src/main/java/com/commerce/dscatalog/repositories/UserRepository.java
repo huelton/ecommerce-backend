@@ -1,7 +1,7 @@
 package com.commerce.dscatalog.repositories;
 
 import com.commerce.dscatalog.entities.User;
-import com.commerce.dscatalog.entities.projetcions.UserDetailsProjection;
+import com.commerce.dscatalog.entities.projections.UserDetailsProjection;
 
 import java.util.List;
 

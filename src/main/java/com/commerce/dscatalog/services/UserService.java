@@ -21,7 +21,7 @@ import com.commerce.dscatalog.dto.UserInsertDTO;
 import com.commerce.dscatalog.dto.UserUpdateDTO;
 import com.commerce.dscatalog.entities.Role;
 import com.commerce.dscatalog.entities.User;
-import com.commerce.dscatalog.entities.projetcions.UserDetailsProjection;
+import com.commerce.dscatalog.entities.projections.UserDetailsProjection;
 import com.commerce.dscatalog.repositories.RoleRepository;
 import com.commerce.dscatalog.repositories.UserRepository;
 import com.commerce.dscatalog.services.exceptions.DatabaseException;

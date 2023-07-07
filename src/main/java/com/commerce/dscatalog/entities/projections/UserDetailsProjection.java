@@ -1,4 +1,4 @@
-package com.commerce.dscatalog.entities.projetcions;
+package com.commerce.dscatalog.entities.projections;
 
 public interface UserDetailsProjection {
 
