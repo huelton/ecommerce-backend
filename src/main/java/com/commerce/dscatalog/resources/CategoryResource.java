@@ -1,6 +1,7 @@
 package com.commerce.dscatalog.resources;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,13 +28,18 @@ public class CategoryResource {
 	@Autowired
 	private CategoryService service;
 	
-	@GetMapping
-	public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable) {
+	@GetMapping(value = "/list")
+	public ResponseEntity<List<CategoryDTO>> findAll() {
+		List<CategoryDTO> list = service.findAll();		
+		return ResponseEntity.ok().body(list);
+	}
+	
+	@GetMapping(value = "/page")
+	public ResponseEntity<Page<CategoryDTO>> findAllPage(Pageable pageable) {
 		Page<CategoryDTO> list = service.findAllPaged(pageable);		
 		return ResponseEntity.ok().body(list);
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
 		CategoryDTO dto = service.findById(id);
