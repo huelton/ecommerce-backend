@@ -20,16 +20,16 @@ public class AuthResource {
 	@Autowired
 	private AuthService authService;
 
-	@PostMapping(value="/recover-token")
+	@PostMapping(value = "/recover-token")
 	public ResponseEntity<Void> createRevocerToken(@Valid @RequestBody EmailDTO emailDTO) {
 		authService.createRecoverToken(emailDTO);
 		return ResponseEntity.noContent().build();
 	}
-	
-	@PostMapping(value="/new-password")
+
+	@PostMapping(value = "/new-password")
 	public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO newPasswordDTO) {
 		authService.saveNewPassword(newPasswordDTO);
 		return ResponseEntity.noContent().build();
 	}
 
-} 
+}
