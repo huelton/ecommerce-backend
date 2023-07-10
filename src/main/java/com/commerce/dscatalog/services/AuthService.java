@@ -1,18 +1,23 @@
 package com.commerce.dscatalog.services;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.commerce.dscatalog.dto.EmailDTO;
+import com.commerce.dscatalog.dto.NewPasswordDTO;
 import com.commerce.dscatalog.entities.PasswordRecover;
 import com.commerce.dscatalog.entities.User;
 import com.commerce.dscatalog.repositories.PasswordRecoveryRepository;
 import com.commerce.dscatalog.repositories.UserRepository;
 import com.commerce.dscatalog.services.exceptions.EmailException;
+import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class AuthService {
@@ -24,6 +29,9 @@ public class AuthService {
 
 	@Value("${email.password-recover.uri}")
 	private String recoverUri;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -34,6 +42,7 @@ public class AuthService {
 	@Autowired
 	private EmailService emailService;
 
+	@Transactional
 	public void createRecoverToken(EmailDTO dto) {
 
 		User user = userRepository.findByEmail(dto.getEmail());
@@ -55,6 +64,20 @@ public class AuthService {
 
 		emailService.sendEmail(dto.getEmail(), SUBJECT_EMAIL, body);
 
+	}
+
+	@Transactional
+	public void saveNewPassword(NewPasswordDTO newPasswordDTO) {
+		
+		List<PasswordRecover> result = passwordRecoveryRepository.searchValidTokens(newPasswordDTO.getToken(), Instant.now());
+		
+		if(result.isEmpty()) {
+			throw new ResourceNotFoundException("Token Not found");
+		}
+		
+		User user =  userRepository.findByEmail(result.get(0).getEmail());
+		user.setPassword(passwordEncoder.encode(newPasswordDTO.getPassword()));
+		user = userRepository.save(user);
 	}
 
 }
