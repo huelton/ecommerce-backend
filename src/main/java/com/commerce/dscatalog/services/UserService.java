@@ -58,6 +58,10 @@ public class UserService implements UserDetailsService {
 	public UserDTO insert(UserInsertDTO dto) {
 		User entity = new User();
 		copyDtoToEntity(dto, entity);
+		
+		entity.getRoles().clear();
+		entity.getRoles().add(roleRepository.findByAuthority("ROLE_OPERATOR"));
+		
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = userRepository.save(entity);
 		return new UserDTO(entity);
