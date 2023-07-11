@@ -40,6 +40,7 @@ INSERT INTO tb_product (name, price, date, description, img_url) VALUES ('PC Gam
 INSERT INTO tb_product (name, price, date, description, img_url) VALUES ('PC Gamer Boo', 2350.0, TIMESTAMP WITH TIME ZONE '2022-07-14T10:00:00Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/24-big.jpg');
 INSERT INTO tb_product (name, price, date, description, img_url) VALUES ('PC Gamer Foo', 4170.0, TIMESTAMP WITH TIME ZONE '2022-07-14T10:00:00Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/25-big.jpg');
 
+
 INSERT INTO tb_product_category (product_id, category_id) VALUES (1, 2);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 1);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (2, 3);
@@ -66,3 +67,24 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (22, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (23, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (24, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (25, 3);
+
+
+INSERT INTO tb_state(id, state_name) VALUES (1, 'São Paulo');
+INSERT INTO tb_state(id, state_name) VALUES (2, 'Minas Gerais');
+INSERT INTO tb_state(id, state_name) VALUES (3, 'Rio de Janeiro');
+
+
+INSERT INTO tb_city(id, city_name, state_id) VALUES (1, 'São Paulo', 1);
+INSERT INTO tb_city(id, city_name, state_id) VALUES (2, 'Santo André', 1);
+INSERT INTO tb_city(id, city_name, state_id) VALUES (3, 'Belo Horizonte', 2);
+INSERT INTO tb_city(id, city_name, state_id) VALUES (4, 'Copacabana', 3);
+INSERT INTO tb_city(id, city_name, state_id) VALUES (5, 'Rio de Janeiro', 3);
+
+
+INSERT INTO tb_address (id, street, number, complement, neighborhood, zip_code, avaliable, user_id, city_id) VALUES (1, 'rua sobe e desce', '500', 'block 2', 'vila da flores','09291199',true,3,2);
+
+
+INSERT INTO tb_order(id, address_id, create_date, user_id) VALUES (1, 1, NOW(), 1);
+INSERT INTO tb_order_item(order_id, discount, price, quantity, product_id) VALUES (1, 2.00, 120.00, 3, 2);
+
+
