@@ -4,17 +4,22 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.commerce.dscatalog.dto.OrderDTO;
 import com.commerce.dscatalog.dto.OrderInsertDTO;
 import com.commerce.dscatalog.dto.OrderItemDTO;
+import com.commerce.dscatalog.dto.OrderRemoveItemDTO;
+import com.commerce.dscatalog.dto.OrderUpdateDTO;
 import com.commerce.dscatalog.entities.DeliveryAddress;
 import com.commerce.dscatalog.entities.Order;
 import com.commerce.dscatalog.entities.OrderItem;
+import com.commerce.dscatalog.entities.OrderItemPK;
 import com.commerce.dscatalog.entities.Product;
 import com.commerce.dscatalog.entities.Status;
 import com.commerce.dscatalog.entities.User;
@@ -24,8 +29,11 @@ import com.commerce.dscatalog.repositories.OrderRepository;
 import com.commerce.dscatalog.repositories.ProductRepository;
 import com.commerce.dscatalog.repositories.StatusRepository;
 import com.commerce.dscatalog.repositories.UserRepository;
+import com.commerce.dscatalog.services.exceptions.DatabaseException;
 import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
 import com.commerce.dscatalog.utils.Constants;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class OrderService {
@@ -95,7 +103,7 @@ public class OrderService {
 			OrderItem oi = new OrderItem(order, entityProduct, orderItem.getDiscount(), orderItem.getQuantity(),
 					orderItem.getPrice());
 			orderItemRepository.save(oi);
-			orderSaved.addtems(oi);
+			orderSaved.addItems(oi);
 		}
 
 		orderSaved = orderRepository.save(orderSaved);
@@ -103,13 +111,97 @@ public class OrderService {
 		return new OrderDTO(orderSaved, orderSaved.getItems());
 	}
 
-	private void copyDtoToEntity(OrderDTO dto, Order entity, DeliveryAddress da, User user, Status status) {
+	@Transactional
+	public void removeItemsOrder(Long id, OrderRemoveItemDTO obj) {
+		try {
+			Order entity = orderRepository.getReferenceById(id);
+			copyDtoToEntityUpdateRemoveItem(obj,entity);
 
+			for (OrderItemDTO orderItem : obj.getItems()) {
+				Optional<Product> optProduct = productRepository.findById(orderItem.getProductId());
+				Product entityProduct = optProduct.orElseThrow(
+						() -> new ResourceNotFoundException("Product not Found! id: " + orderItem.getProductId()));
+				OrderItemPK pk = new OrderItemPK(entity, entityProduct);
+				Optional<OrderItem> optOrderItem = orderItemRepository.findById(pk);
+				OrderItem entityOrderItem = optOrderItem.orElseThrow(
+						() -> new ResourceNotFoundException("Order Item not Found Product! id: " + orderItem.getProductId()));
+
+				if ((entityProduct.getId() == orderItem.getProductId())
+						&& (entityOrderItem.getId().getOrder().getId() == orderItem.getOrderId())) {
+					entity.removeItems(entityOrderItem);					
+					orderItemRepository.deleteById(pk);
+				}
+			}
+			orderRepository.save(entity);
+
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Order Id not found: " + id);
+		}
+	}
+
+	@Transactional
+	public OrderDTO update(Long id, OrderUpdateDTO obj) {
+		try {
+			Order entity = orderRepository.getReferenceById(id);
+			obj.setStatusOrder(obj.getStatusOrder());
+			obj.setUpdateDate(obj.getUpdateDate());
+			OrderDTO dto = new OrderDTO(obj);
+
+			Optional<Status> optStatus = statusRepository.findByStatusType(obj.getStatusOrder());
+			Status entityStatus = optStatus.orElseThrow(
+					() -> new ResourceNotFoundException("Status not Found! name: " + obj.getStatusOrder()));
+
+			copyDtoToEntityUpdate(dto, entity, entityStatus);
+			Order orderSaved = orderRepository.save(entity);
+
+			for (OrderItemDTO orderItem : obj.getItems()) {
+				Optional<Product> optProduct = productRepository.findById(orderItem.getProductId());
+				Product entityProduct = optProduct.orElseThrow(
+						() -> new ResourceNotFoundException("Product not Found! id: " + orderItem.getProductId()));
+				OrderItem oi = new OrderItem(entity, entityProduct, orderItem.getDiscount(), orderItem.getQuantity(),
+						orderItem.getPrice());
+				orderItemRepository.save(oi);
+				orderSaved.addItems(oi);
+			}
+
+			orderSaved = orderRepository.save(orderSaved);
+
+			return new OrderDTO(orderSaved, orderSaved.getItems());
+
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Order Id not found: " + id);
+		}
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS)
+	public void delete(Long id) {
+		if (!orderRepository.existsById(id)) {
+			throw new ResourceNotFoundException("Order Id not found " + id);
+		}
+		try {
+			orderRepository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation");
+		}
+	}
+
+	private void copyDtoToEntity(OrderDTO dto, Order entity, DeliveryAddress da, User user, Status status) {
 		entity.setCreateDate(dto.getCreateDate());
 		entity.setDeliveryAddress(da);
 		entity.setUser(user);
 		entity.setStatus(status);
+
+	}
+
+	private void copyDtoToEntityUpdate(OrderDTO dto, Order entity, Status status) {
+		entity.setUpdateDate(dto.getUpdateDate());
+		entity.setStatus(status);
 		entity.getItems().clear();
+
+	}
+	
+	private void copyDtoToEntityUpdateRemoveItem(OrderRemoveItemDTO dto, Order entity) {
+		entity.setUpdateDate(dto.getUpdateDate());
 
 	}
 
