@@ -83,8 +83,13 @@ INSERT INTO tb_city(id, city_name, state_id) VALUES (5, 'Rio de Janeiro', 3);
 
 INSERT INTO tb_address (id, street, number, complement, neighborhood, zip_code, avaliable, user_id, city_id) VALUES (1, 'rua sobe e desce', '500', 'block 2', 'vila da flores','09291199',true,3,2);
 
+INSERT INTO tb_status(id, status_type) VALUES (1, 'ABERTO');
+INSERT INTO tb_status(id, status_type) VALUES (2, 'PENDENTE');
+INSERT INTO tb_status(id, status_type) VALUES (3, 'FINALIZADO');
+INSERT INTO tb_status(id, status_type) VALUES (4, 'FECHADO');
 
-INSERT INTO tb_order(id, address_id, create_date, user_id) VALUES (1, 1, NOW(), 1);
-INSERT INTO tb_order_item(order_id, discount, price, quantity, product_id) VALUES (1, 2.00, 120.00, 3, 2);
+INSERT INTO tb_order(id, address_id, create_date, status_id, user_id) VALUES (100, 1, TIMESTAMP WITH TIME ZONE '2023-07-10T10:00:00Z', 1, 3);
 
+INSERT INTO tb_order_item(order_id, discount, price, quantity, product_id) VALUES (100, 2.00, 120.00, 3, 2);
+INSERT INTO tb_order_item(order_id, discount, price, quantity, product_id) VALUES (100, 2.00, 120.00, 3, 3);
 

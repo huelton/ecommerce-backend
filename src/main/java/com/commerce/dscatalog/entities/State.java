@@ -21,7 +21,7 @@ public class State implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
 	private String stateName;
 
@@ -32,16 +32,16 @@ public class State implements Serializable {
 	public State() {
 	}
 
-	public State(Integer id, String stateName) {
+	public State(Long id, String stateName) {
 		this.id = id;
 		this.stateName = stateName;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

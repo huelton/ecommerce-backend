@@ -27,10 +27,14 @@ public class Order implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+	//@JsonFormat(pattern = "dd-MM-yyyy hh:mm")
 	private Instant createDate;
+	
+	@ManyToOne()
+	@JoinColumn(name = "status_id")
+	private Status status;
 
 	@ManyToOne()
 	@JoinColumn(name = "user_id")
@@ -46,28 +50,27 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(Integer id, Instant createDate, User user, DeliveryAddress deliveryAddress) {
-
+	public Order(Long id, Instant createDate, User user, DeliveryAddress deliveryAddress, Status status) {
 		this.id = id;
 		this.createDate = createDate;
 		this.user = user;
 		this.deliveryAddress = deliveryAddress;
+		this.status = status;
 	}
 
-	public double getValorTotal() {
-		double soma = 0.0;
-		for (OrderItem itemPedido : items) {
-			soma = soma + itemPedido.getSubtotal();
+	public double getTotalValue() {
+		double sum = 0.0;
+		for (OrderItem orderItem : items) {
+			sum += orderItem.getSubtotal();
 		}
-
-		return soma;
+		return sum;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -98,9 +101,22 @@ public class Order implements Serializable {
 	public Set<OrderItem> getItems() {
 		return items;
 	}
+	
+	public void addtems(OrderItem item) {
+		this.items.add(item);
+	}
+	
 
 	public void setItems(Set<OrderItem> items) {
 		this.items = items;
+	}
+	
+	public Status getStatus() {
+		return status;
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	@Override
@@ -138,13 +154,13 @@ public class Order implements Serializable {
 		builder.append(", create date: ");
 		builder.append(sdf.format(getCreateDate()));
 		builder.append(", user: ");
-		builder.append(getUser().getUsername());
+		//builder.append(getUser().getUsername());
 		builder.append("\nDetails:\n");
 		for (OrderItem itemPedido : getItems()) {
 			builder.append(itemPedido.toString());
 		}
 		builder.append("Total Value Order: ");
-		builder.append(nf.format(getValorTotal()));
+		builder.append(nf.format(getTotalValue()));
 		return builder.toString();
 	}
 
