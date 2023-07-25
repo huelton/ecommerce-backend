@@ -11,6 +11,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,7 +46,7 @@ public class Order implements Serializable {
 	@JoinColumn(name = "address_id")
 	private DeliveryAddress deliveryAddress;
 
-	@OneToMany(mappedBy = "id.order")
+	@OneToMany(mappedBy = "id.order", fetch = FetchType.EAGER)
 	private Set<OrderItem> items = new HashSet<>();
 
 	public Order() {

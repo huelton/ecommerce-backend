@@ -87,6 +87,7 @@ INSERT INTO tb_status(id, status_type) VALUES (1, 'ABERTO');
 INSERT INTO tb_status(id, status_type) VALUES (2, 'PENDENTE');
 INSERT INTO tb_status(id, status_type) VALUES (3, 'FINALIZADO');
 INSERT INTO tb_status(id, status_type) VALUES (4, 'FECHADO');
+INSERT INTO tb_status(id, status_type) VALUES (5, 'CANCELADO');
 
 INSERT INTO tb_order(id, address_id, create_date, status_id, user_id) VALUES (100, 1, TIMESTAMP WITH TIME ZONE '2023-07-10T10:00:00Z', 1, 3);
 
