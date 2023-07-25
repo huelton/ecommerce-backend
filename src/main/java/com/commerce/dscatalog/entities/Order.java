@@ -29,8 +29,9 @@ public class Order implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	//@JsonFormat(pattern = "dd-MM-yyyy hh:mm")
 	private Instant createDate;
+	
+	private Instant updateDate;
 	
 	@ManyToOne()
 	@JoinColumn(name = "status_id")
@@ -50,9 +51,10 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(Long id, Instant createDate, User user, DeliveryAddress deliveryAddress, Status status) {
+	public Order(Long id, Instant createDate,Instant updateDate, User user, DeliveryAddress deliveryAddress, Status status) {
 		this.id = id;
 		this.createDate = createDate;
+		this.updateDate = updateDate;
 		this.user = user;
 		this.deliveryAddress = deliveryAddress;
 		this.status = status;
@@ -80,7 +82,15 @@ public class Order implements Serializable {
 
 	public void setCreateDate(Instant createDate) {
 		this.createDate = createDate;
-	}	
+	}
+
+	public Instant getUpdateDate() {
+		return updateDate;
+	}
+	
+	public void setUpdateDate(Instant updateDate) {
+		this.updateDate = updateDate;
+	}
 
 	public User getUser() {
 		return user;
@@ -102,10 +112,13 @@ public class Order implements Serializable {
 		return items;
 	}
 	
-	public void addtems(OrderItem item) {
+	public void addItems(OrderItem item) {
 		this.items.add(item);
 	}
 	
+	public void removeItems(OrderItem item) {
+		this.items.add(item);
+	}
 
 	public void setItems(Set<OrderItem> items) {
 		this.items = items;

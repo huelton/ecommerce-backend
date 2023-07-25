@@ -8,13 +8,16 @@ import java.util.Set;
 
 import com.commerce.dscatalog.entities.Order;
 import com.commerce.dscatalog.entities.OrderItem;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private Instant createDate;
+	private Instant updateDate;
 	private String statusOrder;
 	private DeliveryAddressDTO deliveryAddress;
 	private UserOrderDTO user;
@@ -24,10 +27,11 @@ public class OrderDTO implements Serializable{
 	public OrderDTO() {
 	}
 
-	public OrderDTO(Long id, Instant createDate, String statusOrder, DeliveryAddressDTO deliveryAddress, UserOrderDTO user,
+	public OrderDTO(Long id, Instant createDate, Instant updateDate,String statusOrder, DeliveryAddressDTO deliveryAddress, UserOrderDTO user,
 			Set<OrderItemDTO> items, Double total) {
 		this.id = id;
 		this.createDate = createDate;
+		this.updateDate = updateDate;
 		this.statusOrder = statusOrder;
 		this.deliveryAddress = deliveryAddress;
 		this.user = user;
@@ -41,9 +45,21 @@ public class OrderDTO implements Serializable{
 		orderInsertDTO.getItems().forEach(oi -> this.items.add(oi));	
 	}
 	
+	public OrderDTO(OrderUpdateDTO orderUpdateDTO) {
+		statusOrder = orderUpdateDTO.getStatusOrder();
+		updateDate = orderUpdateDTO.getUpdateDate();
+		orderUpdateDTO.getItems().forEach(oi -> this.items.add(oi));	
+	}
+	
+	public OrderDTO(OrderRemoveItemDTO orderRemoveItemDTO) {
+		updateDate = orderRemoveItemDTO.getUpdateDate();
+		orderRemoveItemDTO.getItems().forEach(oi -> this.items.add(oi));	
+	}
+	
 	public OrderDTO(Order order) {
 		id = order.getId();
 		createDate = order.getCreateDate();
+		updateDate = order.getUpdateDate();
 		statusOrder = order.getStatus().getStatusType();
 		deliveryAddress = new DeliveryAddressDTO(order.getDeliveryAddress());
 		user = new UserOrderDTO(order.getUser());
@@ -69,6 +85,14 @@ public class OrderDTO implements Serializable{
 
 	public void setCreateDate(Instant createDate) {
 		this.createDate = createDate;
+	}
+	
+	public Instant getUpdateDate() {
+		return updateDate;
+	}
+	
+	public void setUpdateDate(Instant updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	public String getStatusOrder() {
