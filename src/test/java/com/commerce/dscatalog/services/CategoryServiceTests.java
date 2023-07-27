@@ -1,13 +1,17 @@
 package com.commerce.dscatalog.services;
 
-import com.commerce.dscatalog.dto.CategoryDTO;
-import com.commerce.dscatalog.dto.ProductDTO;
-import com.commerce.dscatalog.entities.Category;
-import com.commerce.dscatalog.entities.Product;
-import com.commerce.dscatalog.repositories.CategoryRepository;
-import com.commerce.dscatalog.repositories.ProductRepository;
-import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
-import com.commerce.dscatalog.tests.Factory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,11 +26,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.commerce.dscatalog.dto.CategoryDTO;
+import com.commerce.dscatalog.entities.Category;
+import com.commerce.dscatalog.repositories.CategoryRepository;
+import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.commerce.dscatalog.tests.Factory;
 
 
 @SpringBootTest
@@ -42,7 +46,6 @@ public class CategoryServiceTests {
     private long notExistingId;
     private long dependentId;
     private Category category;
-    private CategoryDTO categoryDTO;
 
     @BeforeEach
     void setup() {
@@ -50,7 +53,6 @@ public class CategoryServiceTests {
         notExistingId = 1000L;
         dependentId = 4;
         category = Factory.createCategory();
-        categoryDTO = Factory.createCategoryDTO();
         page = new PageImpl<>(List.of(category));
 
         when(categoryRepository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);

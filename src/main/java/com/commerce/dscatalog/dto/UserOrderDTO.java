@@ -1,8 +1,6 @@
 package com.commerce.dscatalog.dto;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.commerce.dscatalog.entities.User;
 

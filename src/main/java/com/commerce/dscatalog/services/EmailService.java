@@ -1,7 +1,5 @@
 package com.commerce.dscatalog.services;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -45,10 +43,9 @@ public class EmailService {
 
 	protected SimpleMailMessage prepareSimpleMailMessageFromPedido(Order obj) {
 		SimpleMailMessage sm = new SimpleMailMessage();
-		//sm.setTo(obj.getUser().getEmail());
+		sm.setTo(obj.getUser().getEmail());
 		sm.setFrom(sender);
 		sm.setSubject("Pedido Confirmado! Código: " + obj.getId());
-		sm.setSentDate(new Date(System.currentTimeMillis()));
 		sm.setText(obj.toString());
 		emailSender.send(sm);
 		return sm;

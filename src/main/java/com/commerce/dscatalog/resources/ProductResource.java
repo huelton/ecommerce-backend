@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.commerce.dscatalog.dto.ProductDTO;
-import com.commerce.dscatalog.entities.projections.ProductProjection;
 import com.commerce.dscatalog.services.ProductService;
 
 import jakarta.validation.Valid;

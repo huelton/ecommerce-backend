@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.commerce.dscatalog.services.exceptions.AuthorizationException;
 import com.commerce.dscatalog.services.exceptions.DatabaseException;
 import com.commerce.dscatalog.services.exceptions.EmailException;
+import com.commerce.dscatalog.services.exceptions.OrderAuthorizationException;
 import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,6 +51,19 @@ public class ResourceExceptionHandler {
 		err.setTimestamp(Instant.now());
 		err.setStatus(status.value());
 		err.setError("Email exception");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}	
+	
+	
+	@ExceptionHandler(OrderAuthorizationException.class)
+	public ResponseEntity<StandardError> orderAuthorizationError(OrderAuthorizationException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Order exception");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(err);

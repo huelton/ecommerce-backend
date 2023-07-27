@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.commerce.dscatalog.dto.StateDTO;
-import com.commerce.dscatalog.dto.UserDTO;
-import com.commerce.dscatalog.dto.UserInsertDTO;
-import com.commerce.dscatalog.dto.UserUpdateDTO;
 import com.commerce.dscatalog.services.StateService;
 
 import jakarta.validation.Valid;

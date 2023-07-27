@@ -2,13 +2,13 @@ package com.commerce.dscatalog.entities;
 
 import java.io.Serializable;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -161,14 +161,16 @@ public class Order implements Serializable {
 	@Override
 	public String toString() {
 		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        LocalDateTime localDateTime = getCreateDate().atOffset(ZoneOffset.UTC).toLocalDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        
 		StringBuilder builder = new StringBuilder();
 		builder.append("Order Number: ");
 		builder.append(getId());
 		builder.append(", create date: ");
-		builder.append(sdf.format(getCreateDate()));
+		builder.append(formatter.format(localDateTime));
 		builder.append(", user: ");
-		//builder.append(getUser().getUsername());
+		builder.append(getUser().getUsername());
 		builder.append("\nDetails:\n");
 		for (OrderItem itemPedido : getItems()) {
 			builder.append(itemPedido.toString());

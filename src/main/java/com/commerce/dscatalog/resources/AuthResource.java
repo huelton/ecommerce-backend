@@ -3,6 +3,7 @@ package com.commerce.dscatalog.resources;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ public class AuthResource {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PostMapping(value = "/new-password")
+	@PutMapping(value = "/new-password")
 	public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO newPasswordDTO) {
 		authService.saveNewPassword(newPasswordDTO);
 		return ResponseEntity.noContent().build();

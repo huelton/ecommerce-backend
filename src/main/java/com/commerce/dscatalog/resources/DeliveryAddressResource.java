@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.commerce.dscatalog.dto.CityDTO;
 import com.commerce.dscatalog.dto.DeliveryAddressDTO;
-import com.commerce.dscatalog.services.CityService;
 import com.commerce.dscatalog.services.DeliveryAddressService;
 
 import jakarta.validation.Valid;

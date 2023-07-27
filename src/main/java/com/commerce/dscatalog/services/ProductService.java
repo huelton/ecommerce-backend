@@ -43,11 +43,11 @@ public class ProductService {
 
 		Page<ProductProjection> page = repository.searchProducts(categoryIds, name, pageable);
 		List<Long> productIds = page.map(x -> x.getId()).toList();
-		
+
 		List<Product> entities = repository.searchProductsWithCategories(productIds);
 		List<ProductDTO> dtos = entities.stream().map(p -> new ProductDTO(p, p.getCategories())).toList();
-		return new PageImpl<>(dtos,page.getPageable(), page.getTotalElements());
-		
+		return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+
 	}
 
 	@Transactional(readOnly = true)
@@ -102,6 +102,10 @@ public class ProductService {
 			Category category = categoryRepository.getReferenceById(catDto.getId());
 			entity.getCategories().add(category);
 		}
+	}
+
+	public void acessoAoMetodo(ProductDTO dto, Product entity) {
+		copyDtoToEntity(dto, entity);
 	}
 
 }

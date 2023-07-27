@@ -22,11 +22,12 @@ import com.commerce.dscatalog.repositories.PasswordRecoveryRepository;
 import com.commerce.dscatalog.repositories.UserRepository;
 import com.commerce.dscatalog.services.exceptions.EmailException;
 import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.commerce.dscatalog.utils.Constants;
 
 @Service
 public class AuthService {
 
-	private final static String SUBJECT_EMAIL = "Recuperação Senha";
+
 
 	@Value("${email.password-recover.token.minutes}")
 	private Long tokenMinutes;
@@ -66,7 +67,7 @@ public class AuthService {
 		         + recoverUri + token + ". \n\n"
 		         +"Validade de "+ tokenMinutes + " minutos";
 
-		emailService.sendEmail(dto.getEmail(), SUBJECT_EMAIL, body);
+		emailService.sendEmail(dto.getEmail(), Constants.RECOVER_PASSWORD_FROM_EMAIL, body);
 
 	}
 
@@ -74,7 +75,6 @@ public class AuthService {
 	public void saveNewPassword(NewPasswordDTO newPasswordDTO) {
 		
 		List<PasswordRecover> result = passwordRecoveryRepository.searchValidTokens(newPasswordDTO.getToken(), Instant.now());
-		
 		if(result.isEmpty()) {
 			throw new ResourceNotFoundException("Token Not found");
 		}
@@ -92,7 +92,7 @@ public class AuthService {
 			String username = jwtPrincipal.getClaim("username");
 			return userRepository.findByEmail(username);
 		} catch (Exception e) {
-			throw new UsernameNotFoundException("Incalid User");
+			throw new UsernameNotFoundException("Invalid User");
 		}
 	}
 

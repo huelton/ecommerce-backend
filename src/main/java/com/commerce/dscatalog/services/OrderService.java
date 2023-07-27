@@ -2,7 +2,6 @@ package com.commerce.dscatalog.services;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,6 +30,7 @@ import com.commerce.dscatalog.repositories.ProductRepository;
 import com.commerce.dscatalog.repositories.StatusRepository;
 import com.commerce.dscatalog.repositories.UserRepository;
 import com.commerce.dscatalog.services.exceptions.DatabaseException;
+import com.commerce.dscatalog.services.exceptions.OrderAuthorizationException;
 import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
 import com.commerce.dscatalog.utils.Constants;
 
@@ -108,6 +108,7 @@ public class OrderService {
 		}
 
 		orderSaved = orderRepository.save(orderSaved);
+		emailService.sendOrderConfirmationEmail(orderSaved);
 
 		return new OrderDTO(orderSaved, orderSaved.getItems());
 	}
@@ -117,11 +118,12 @@ public class OrderService {
 	public void removeItemsOrder(Long id, OrderRemoveItemDTO obj) {
 		try {
 			Order entity = orderRepository.getReferenceById(id);
-			if(entity.getStatus().equals(Constants.CANCEL_STATUS_TYPE)) {
-				throw new ResourceNotFoundException("Order is cancelled no Update! name: " + entity.getStatus().getStatusType());
+			if (entity.getStatus().equals(Constants.CANCEL_STATUS_TYPE)) {
+				throw new OrderAuthorizationException(
+						"Order is cancelled no Update! name: " + entity.getStatus().getStatusType());
 			}
 
-			copyDtoToEntityUpdateRemoveItem(obj,entity);
+			copyDtoToEntityUpdateRemoveItem(obj, entity);
 
 			for (OrderItemDTO orderItem : obj.getItems()) {
 				Optional<Product> optProduct = productRepository.findById(orderItem.getProductId());
@@ -129,12 +131,12 @@ public class OrderService {
 						() -> new ResourceNotFoundException("Product not Found! id: " + orderItem.getProductId()));
 				OrderItemPK pk = new OrderItemPK(entity, entityProduct);
 				Optional<OrderItem> optOrderItem = orderItemRepository.findById(pk);
-				OrderItem entityOrderItem = optOrderItem.orElseThrow(
-						() -> new ResourceNotFoundException("Order Item not Found Product! id: " + orderItem.getProductId()));
+				OrderItem entityOrderItem = optOrderItem.orElseThrow(() -> new ResourceNotFoundException(
+						"Order Item not Found Product! id: " + orderItem.getProductId()));
 
 				if ((entityProduct.getId() == orderItem.getProductId())
 						&& (entityOrderItem.getId().getOrder().getId() == orderItem.getOrderId())) {
-					entity.removeItems(entityOrderItem);					
+					entity.removeItems(entityOrderItem);
 					orderItemRepository.deleteById(pk);
 				}
 			}
@@ -150,14 +152,15 @@ public class OrderService {
 		try {
 			Order entity = orderRepository.getReferenceById(id);
 			Optional<Status> optStatus = statusRepository.findByStatusType(entity.getStatus().getStatusType());
-			if(optStatus.get().getStatusType().equals(Constants.CANCEL_STATUS_TYPE)) {
-				throw new ResourceNotFoundException("Order is cancelled no Update! name: " + entity.getStatus().getStatusType());
+			if (optStatus.get().getStatusType().equals(Constants.CANCEL_STATUS_TYPE)) {
+				throw new OrderAuthorizationException(
+						"Order is cancelled no Update! name: " + entity.getStatus().getStatusType());
 			}
-			
+
 			obj.setStatusOrder(obj.getStatusOrder());
 			obj.setUpdateDate(obj.getUpdateDate());
 			OrderDTO dto = new OrderDTO(obj);
-			
+
 			Status entityStatus = optStatus.orElseThrow(
 					() -> new ResourceNotFoundException("Status not Found! name: " + obj.getStatusOrder()));
 
@@ -188,15 +191,14 @@ public class OrderService {
 		if (!orderRepository.existsById(id)) {
 			throw new ResourceNotFoundException("Order Id not found " + id);
 		}
-	try {
-		    Optional<Order> optOrder = orderRepository.findById(id);
-		    Order entityOrder = optOrder
-					.orElseThrow(() -> new ResourceNotFoundException("Order not Found! id: " + id));
-		
+		try {
+			Optional<Order> optOrder = orderRepository.findById(id);
+			Order entityOrder = optOrder.orElseThrow(() -> new ResourceNotFoundException("Order not Found! id: " + id));
+
 			Optional<Status> optStatus = statusRepository.findByStatusType(Constants.CANCEL_STATUS_TYPE);
-			entityOrder.setStatus(optStatus.get());	
+			entityOrder.setStatus(optStatus.get());
 			orderRepository.save(entityOrder);
-			entityOrder.getItems().forEach(x ->  {
+			entityOrder.getItems().forEach(x -> {
 				x.getId();
 				orderItemRepository.deleteById(x.getId());
 			});
@@ -219,7 +221,7 @@ public class OrderService {
 		entity.getItems().clear();
 
 	}
-	
+
 	private void copyDtoToEntityUpdateRemoveItem(OrderRemoveItemDTO dto, Order entity) {
 		entity.setUpdateDate(dto.getUpdateDate());
 
