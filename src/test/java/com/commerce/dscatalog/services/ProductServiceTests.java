@@ -63,9 +63,13 @@ public class ProductServiceTests {
 	private Product product, productSaved, productUpdate;
 	private ProductProjection productProjection;
 	private PageImpl<ProductProjection> pageProductProjection;
+	private String nameProduct, categoryId;
+	Pageable pageable;
 
 	@BeforeEach
 	void setup() {
+		nameProduct = "Playstation";
+		categoryId = "1,2";
 		existingId = 1L;
 		notExistingId = 1000L;
 		dependentId = 4;
@@ -76,7 +80,7 @@ public class ProductServiceTests {
 		categoryIds = List.of(1L, 2L);
 		productIds = List.of(1L);
 		page = new PageImpl<>(List.of(product));
-		Pageable pageable = PageRequest.of(PAGE, SIZE);
+		pageable = PageRequest.of(PAGE, SIZE);
 		pageProductProjection = new PageImpl<>(List.of(productProjection));
 
 		when(productRepository.findAll(pageable)).thenReturn(page);
@@ -110,7 +114,8 @@ public class ProductServiceTests {
 
 		when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 		productService.acessoAoMetodo(inputDto, savedProduct);
-		ProductDTO resultDto = productService.insert(inputDto);
+		ProductService productServiceSpy = Mockito.spy(productService);
+		ProductDTO resultDto = productServiceSpy.insert(inputDto);
 		verify(productRepository, times(1)).save(any(Product.class));
 
 		assertNotNull(resultDto);
@@ -122,17 +127,17 @@ public class ProductServiceTests {
 	@Test
 	public void updateProductShouldReturnProductDTO() {
 
-		Long id = 1L;
 		ProductDTO inputDto = new ProductDTO();
 		inputDto.setName("Updated Product");
 		inputDto.setDescription("Updated Description");
 		Product existingProduct = new Product();
-		existingProduct.setId(id);
+		existingProduct.setId(existingId);
 
-		when(productRepository.getReferenceById(id)).thenReturn(existingProduct);
+		when(productRepository.getReferenceById(existingId)).thenReturn(existingProduct);
 		when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
-		ProductDTO resultDto = productService.update(id, inputDto);
-		verify(productRepository, times(1)).getReferenceById(id);
+		ProductService productServiceSpy = Mockito.spy(productService);
+		ProductDTO resultDto = productServiceSpy.update(existingId, inputDto);
+		verify(productRepository, times(1)).getReferenceById(existingId);
 		verify(productRepository, times(1)).save(any(Product.class));
 
 		assertNotNull(resultDto);
@@ -150,10 +155,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findAllPageShouldReturnPage() {
-		String nameProduct = "Playstation";
-		String categoryId = "1,2";
-		Pageable pageable = PageRequest.of(PAGE, SIZE);
+	public void findAllPageShouldReturnPage() {		
 		ProductService productServiceSpy = Mockito.spy(productService);
 		Page<ProductDTO> result = productServiceSpy.findAllPaged(categoryId, nameProduct, pageable);
 		assertNotNull(result);
@@ -179,7 +181,6 @@ public class ProductServiceTests {
 
 	@Test
 	public void deleteShouldThrowsResourceNotFoundException() {
-		when(productRepository.existsById(notExistingId)).thenReturn(false);
 		assertThrows(ResourceNotFoundException.class, () -> productService.delete(notExistingId));
 		verify(productRepository, times(1)).existsById(notExistingId);
 		verify(productRepository, never()).deleteById(notExistingId);
@@ -187,7 +188,6 @@ public class ProductServiceTests {
 
 	@Test
 	public void deleteShouldThrowsDataIntegrityViolationExceptioThrowsDatabaseException() {
-		when(productRepository.existsById(existingId)).thenReturn(true);
 		doThrow(DataIntegrityViolationException.class).when(productRepository).deleteById(existingId);
 		assertThrows(DatabaseException.class, () -> productService.delete(existingId));
 		verify(productRepository, times(1)).existsById(existingId);
@@ -204,10 +204,6 @@ public class ProductServiceTests {
 
 	@Test
 	public void findAllPageShouldReturnPageWhenPage0Size10() {
-
-		String nameProduct = "Playstation";
-		String categoryId = "1,2";
-		Pageable pageable = PageRequest.of(PAGE, SIZE);
 		ProductService productServiceSpy = Mockito.spy(productService);
 		Page<ProductDTO> result = productServiceSpy.findAllPaged(categoryId, nameProduct, pageable);
 
