@@ -26,11 +26,28 @@ public class Factory {
 		Category category = new Category(1L, "Livros");
 		return category;
 	}
+	
+	public static Category createCategoryToUpdate() {
+		Category category = createCategory();
+		category.setName("Update Livro");
+		return category;
+	}
 
 	public static CategoryDTO createCategoryDTO() {
 		Category category = createCategory();
 		return new CategoryDTO(category);
 	}
+	
+	public static CategoryDTO createCategoryDTOToInsert() {
+		Category category = new Category(null, "Livros");
+		return new CategoryDTO(category);
+	}
+	
+	public static CategoryDTO createCategoryDTOToUpdate() {
+		Category category = createCategoryToUpdate();
+		return new CategoryDTO(category);
+	}
+	
 
 	public static TestProductProjection createProjection(Product product) {
 		// Crie uma instância de TestProductProjection
