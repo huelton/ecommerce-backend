@@ -58,9 +58,6 @@ public class OrderService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private AuthService authService;
-
-	@Autowired
 	private EmailService emailService;
 
 	@Transactional(readOnly = true)
@@ -178,7 +175,6 @@ public class OrderService {
 			}
 
 			orderSaved = orderRepository.save(orderSaved);
-
 			return new OrderDTO(orderSaved, orderSaved.getItems());
 
 		} catch (EntityNotFoundException e) {
@@ -212,19 +208,28 @@ public class OrderService {
 		entity.setDeliveryAddress(da);
 		entity.setUser(user);
 		entity.setStatus(status);
-
 	}
 
 	private void copyDtoToEntityUpdate(OrderDTO dto, Order entity, Status status) {
 		entity.setUpdateDate(dto.getUpdateDate());
 		entity.setStatus(status);
 		entity.getItems().clear();
-
 	}
 
 	private void copyDtoToEntityUpdateRemoveItem(OrderRemoveItemDTO dto, Order entity) {
 		entity.setUpdateDate(dto.getUpdateDate());
+	}
 
+	public void accessMethod(OrderDTO dto, Order entity, DeliveryAddress da, User user, Status status) {
+		copyDtoToEntity(dto, entity, da, user, status);
+	}
+
+	public void accessMethodToUodate(OrderDTO dto, Order entity, Status status) {
+		copyDtoToEntityUpdate(dto, entity, status);
+	}
+
+	public void accessMethodToUpdateRemoveItem(OrderRemoveItemDTO dto, Order entity) {
+		copyDtoToEntityUpdateRemoveItem(dto, entity);
 	}
 
 }

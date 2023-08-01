@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.commerce.dscatalog.dto.UserDTO;
 import com.commerce.dscatalog.dto.UserUpdateDTO;
 import com.commerce.dscatalog.entities.User;
 import com.commerce.dscatalog.repositories.UserRepository;

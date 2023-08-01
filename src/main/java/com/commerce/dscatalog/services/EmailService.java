@@ -2,7 +2,7 @@ package com.commerce.dscatalog.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailException;
+import org.springframework.mail.MailParseException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class EmailService {
 
 	@Value("${spring.mail.username}")
 	private String emailFrom;
-	
+
 	@Value("${spring.mail.default.sender}")
 	private String sender;
 
@@ -32,12 +32,12 @@ public class EmailService {
 			message.setText(body);
 			emailSender.send(message);
 
-		} catch (MailException e) {
+		} catch (MailParseException e) {
 			throw new EmailException("Failed to send email");
 		}
-	}	
-	
-	public void sendOrderConfirmationEmail(Order obj){
+	}
+
+	public void sendOrderConfirmationEmail(Order obj) {
 		prepareSimpleMailMessageFromPedido(obj);
 	}
 

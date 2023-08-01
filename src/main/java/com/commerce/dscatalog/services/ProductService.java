@@ -104,7 +104,7 @@ public class ProductService {
 		}
 	}
 
-	public void acessoAoMetodo(ProductDTO dto, Product entity) {
+	public void accessMethod(ProductDTO dto, Product entity) {
 		copyDtoToEntity(dto, entity);
 	}
 

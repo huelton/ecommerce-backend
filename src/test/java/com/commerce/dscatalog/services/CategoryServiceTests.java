@@ -88,11 +88,9 @@ public class CategoryServiceTests {
 
 	@Test
 	public void findAllShouldReturnWhenCategoriesExists() {
-
 		List<CategoryDTO> result = categoryService.findAll();
 		verify(repository, times(1)).findAll();
 		assertEquals(categories.size(), result.size());
-
 	}
 
 	@Test
@@ -101,7 +99,6 @@ public class CategoryServiceTests {
 		Page<CategoryDTO> resultPage = categoryService.findAllPaged(Pageable.unpaged());
 		verify(repository, times(1)).findAll(any(Pageable.class));
 		assertEquals(page.getTotalElements(), resultPage.getTotalElements());
-
 	}
 
 	@Test
@@ -130,7 +127,6 @@ public class CategoryServiceTests {
 
 	@Test
 	public void updateShouldUpdateDataWhenCategoryIdExist() {
-
 		CategoryDTO result = categoryService.update(existingId, dtoToUpdate);
 		verify(repository, times(1)).getReferenceById(existingId);
 		verify(repository, times(1)).save(any(Category.class));

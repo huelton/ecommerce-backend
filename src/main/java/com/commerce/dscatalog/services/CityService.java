@@ -22,7 +22,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CityService {
-	
+
 	@Autowired
 	private CityRepository cityRepository;
 
@@ -75,13 +75,17 @@ public class CityService {
 	}
 
 	private void copyDtoToEntity(CityDTO dto, City entity) {
-		entity.setCityName(dto.getCityName());		
+		entity.setCityName(dto.getCityName());
 		State state = stateRepository.findByStateName(dto.getStateName());
-		if(state == null) {
+		if (state == null) {
 			throw new ResourceNotFoundException("State not found " + dto.getStateName());
 		}
 		entity.setState(state);
 
+	}
+	
+	public void accessMethod(CityDTO dto, City entity) {
+		copyDtoToEntity(dto, entity);
 	}
 
 }

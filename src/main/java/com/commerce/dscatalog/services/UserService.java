@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private AuthService authService;
 
@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
 		Page<User> list = userRepository.findAll(pageable);
 		return list.map(x -> new UserDTO(x));
 	}
-	
+
 	@Transactional(readOnly = true)
 	public UserDTO findMe() {
 		User entity = authService.authenticated();
@@ -67,10 +67,10 @@ public class UserService implements UserDetailsService {
 	public UserDTO insert(UserInsertDTO dto) {
 		User entity = new User();
 		copyDtoToEntity(dto, entity);
-		
+
 		entity.getRoles().clear();
 		entity.getRoles().add(roleRepository.findByAuthority("ROLE_OPERATOR"));
-		
+
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = userRepository.save(entity);
 		return new UserDTO(entity);
@@ -113,11 +113,6 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	// Implementar uma logica para altear o password.
-	private void updatePassword(UserInsertDTO dto, User entity) {
-
-	}
-
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		List<UserDetailsProjection> result = userRepository.searchUserAndRolesByEmail(username);
@@ -133,6 +128,10 @@ public class UserService implements UserDetailsService {
 		}
 
 		return user;
+	}
+	
+	public void accessMethod(UserDTO dto, User entity) {
+		copyDtoToEntity(dto, entity);
 	}
 
 }

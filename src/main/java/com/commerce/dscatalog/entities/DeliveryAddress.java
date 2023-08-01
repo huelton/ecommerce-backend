@@ -13,27 +13,27 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="tb_address")
-public class DeliveryAddress implements Serializable{
+@Table(name = "tb_address")
+public class DeliveryAddress implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	private String street;
 	private String number;
 	private String complement;
 	private String neighborhood;
 	private String zipCode;
-	
+
 	private Boolean avaliable;
-	
+
 	@JsonIgnore
 	@ManyToOne()
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@ManyToOne()
 	@JoinColumn(name = "city_id")
 	private City city;
@@ -41,7 +41,7 @@ public class DeliveryAddress implements Serializable{
 	public DeliveryAddress() {
 	}
 
-	public DeliveryAddress(Integer id, String street, String number, String complement, String neighborhood,
+	public DeliveryAddress(Long id, String street, String number, String complement, String neighborhood,
 			String zipCode, Boolean avaliable, User user, City city) {
 
 		this.id = id;
@@ -55,11 +55,11 @@ public class DeliveryAddress implements Serializable{
 		this.city = city;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -102,11 +102,11 @@ public class DeliveryAddress implements Serializable{
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
-	
+
 	public Boolean getAvaliable() {
 		return avaliable;
 	}
-	
+
 	public void setAvaliable(Boolean avaliable) {
 		this.avaliable = avaliable;
 	}
@@ -151,5 +151,5 @@ public class DeliveryAddress implements Serializable{
 			return false;
 		return true;
 	}
- 
+
 }

@@ -104,7 +104,6 @@ public class ProductServiceTests {
 
 	@Test
 	public void insertProductShouldReturnProductDTO() throws Exception {
-
 		ProductDTO inputDto = new ProductDTO();
 		inputDto.setName("Test Product");
 		inputDto.setDescription("Test Description");
@@ -113,7 +112,7 @@ public class ProductServiceTests {
 		savedProduct.setId(1L);
 
 		when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
-		productService.acessoAoMetodo(inputDto, savedProduct);
+		productService.accessMethod(inputDto, savedProduct);
 		ProductService productServiceSpy = Mockito.spy(productService);
 		ProductDTO resultDto = productServiceSpy.insert(inputDto);
 		verify(productRepository, times(1)).save(any(Product.class));
@@ -126,7 +125,6 @@ public class ProductServiceTests {
 
 	@Test
 	public void updateProductShouldReturnProductDTO() {
-
 		ProductDTO inputDto = new ProductDTO();
 		inputDto.setName("Updated Product");
 		inputDto.setDescription("Updated Description");
@@ -149,9 +147,8 @@ public class ProductServiceTests {
 
 	@Test
 	public void updateShouldThrowEntityNotFoundExceptionWhenIdDoesNotExists() {
-		Long id = 100L;
-		when(productRepository.getReferenceById(id)).thenThrow(new EntityNotFoundException());
-		assertThrows(ResourceNotFoundException.class, () -> productService.update(id, new ProductDTO()));
+		when(productRepository.getReferenceById(notExistingId)).thenThrow(new EntityNotFoundException());
+		assertThrows(ResourceNotFoundException.class, () -> productService.update(notExistingId, new ProductDTO()));
 	}
 
 	@Test
@@ -227,7 +224,7 @@ public class ProductServiceTests {
 		inputDto.setCategories(listCatDTO);
 
 		Product entity = new Product();
-		productService.acessoAoMetodo(inputDto, entity);
+		productService.accessMethod(inputDto, entity);
 		assertEquals(inputDto.getName(), entity.getName());
 		assertEquals(inputDto.getDescription(), entity.getDescription());
 		assertEquals(inputDto.getCategories().get(0).getName(), "Eletronics");

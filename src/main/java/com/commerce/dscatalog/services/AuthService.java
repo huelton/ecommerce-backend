@@ -27,14 +27,12 @@ import com.commerce.dscatalog.utils.Constants;
 @Service
 public class AuthService {
 
-
-
 	@Value("${email.password-recover.token.minutes}")
 	private Long tokenMinutes;
 
 	@Value("${email.password-recover.uri}")
 	private String recoverUri;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -63,9 +61,8 @@ public class AuthService {
 		entity.setExpiration(Instant.now().plusSeconds(tokenMinutes * 60L));
 		entity = passwordRecoveryRepository.save(entity);
 
-		String body = "Acesse o link para definir uma nova senha\n\n" 
-		         + recoverUri + token + ". \n\n"
-		         +"Validade de "+ tokenMinutes + " minutos";
+		String body = "Acesse o link para definir uma nova senha\n\n" + recoverUri + token + ". \n\n" + "Validade de "
+				+ tokenMinutes + " minutos";
 
 		emailService.sendEmail(dto.getEmail(), Constants.RECOVER_PASSWORD_FROM_EMAIL, body);
 
@@ -73,17 +70,17 @@ public class AuthService {
 
 	@Transactional
 	public void saveNewPassword(NewPasswordDTO newPasswordDTO) {
-		
-		List<PasswordRecover> result = passwordRecoveryRepository.searchValidTokens(newPasswordDTO.getToken(), Instant.now());
-		if(result.isEmpty()) {
+
+		List<PasswordRecover> result = passwordRecoveryRepository.searchValidTokens(newPasswordDTO.getToken(),
+				Instant.now());
+		if (result.isEmpty()) {
 			throw new ResourceNotFoundException("Token Not found");
 		}
-		
-		User user =  userRepository.findByEmail(result.get(0).getEmail());
+
+		User user = userRepository.findByEmail(result.get(0).getEmail());
 		user.setPassword(passwordEncoder.encode(newPasswordDTO.getPassword()));
 		user = userRepository.save(user);
 	}
-	
 
 	protected User authenticated() {
 		try {

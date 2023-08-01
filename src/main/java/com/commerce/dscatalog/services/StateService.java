@@ -84,5 +84,9 @@ public class StateService {
 			entity.getCities().add(city);
 		}
 	}
+	
+	public void accessMethod(StateDTO dto, State entity) {
+		copyDtoToEntity(dto, entity);
+	}
 
 }

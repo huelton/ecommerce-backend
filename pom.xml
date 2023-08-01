@@ -82,6 +82,16 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.7</version>
+				<configuration>
+				<excludes>
+				<exclude>com/commerce/dscatalog/DscatalogApplication.class</exclude>
+				<exclude>com/commerce/dscatalog/config/**</exclude>
+				<exclude>com/commerce/dscatalog/entities/**</exclude>
+				<exclude>com/commerce/dscatalog/dto/**</exclude>
+				<exclude>com/commerce/dscatalog/resources/exceptions/**</exclude>
+				<exclude>com/commerce/dscatalog/services/exceptions/**</exclude>
+				</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

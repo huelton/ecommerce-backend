@@ -24,10 +24,10 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class DeliveryAddressService {
-	
+
 	@Autowired
 	private DeliveryAddressRepository deliveryAddressRepository;
-	
+
 	@Autowired
 	private CityRepository cityRepository;
 
@@ -80,7 +80,7 @@ public class DeliveryAddressService {
 	}
 
 	private void copyDtoToEntity(DeliveryAddressDTO dto, DeliveryAddress entity) {
-		
+
 		entity.setStreet(dto.getStreet());
 		entity.setNumber(dto.getNumber());
 		entity.setComplement(dto.getComplement());
@@ -91,11 +91,15 @@ public class DeliveryAddressService {
 		Optional<City> obj1 = cityRepository.findById(dto.getCityId());
 		City city = obj1.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		entity.setCity(city);
-		
+
 		Optional<User> obj2 = userRepository.findById(dto.getUserId());
 		User user = obj2.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		entity.setUser(user);
 
+	}
+	
+	public void accessMethod(DeliveryAddressDTO dto, DeliveryAddress entity) {
+		copyDtoToEntity(dto, entity);
 	}
 
 }

@@ -8,7 +8,7 @@ public class DeliveryAddressDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer id;
+	private Long id;
 	private String street;
 	private String number;
 	private String complement;
@@ -22,7 +22,7 @@ public class DeliveryAddressDTO implements Serializable{
 	public DeliveryAddressDTO() {
 	}
 
-	public DeliveryAddressDTO(Integer id, String street, String number, String complement, String neighborhood,
+	public DeliveryAddressDTO(Long id, String street, String number, String complement, String neighborhood,
 			String zipCode, Boolean avaliable, Long userId, Long cityId) {
 
 		this.id = id;
@@ -49,11 +49,11 @@ public class DeliveryAddressDTO implements Serializable{
 		cityId = da.getCity().getId();
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
