@@ -158,5 +158,13 @@ public class CategoryServiceTests {
 		verify(repository, times(1)).existsById(idToDelete);
 		verify(repository, times(1)).deleteById(idToDelete);
 	}
+	
+    @Test
+    public void deleteShouldThrowsResourceNotFoundException() {
+        Long id = 1L;
+        when(repository.existsById(id)).thenReturn(false);
+        assertThrows(ResourceNotFoundException.class, () -> categoryService.delete(id));
+        verify(repository, never()).deleteById(id);
+    }
 
 }
