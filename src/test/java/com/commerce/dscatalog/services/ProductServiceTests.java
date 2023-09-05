@@ -1,18 +1,21 @@
 package com.commerce.dscatalog.services;
 
+import static com.commerce.dscatalog.tests.Constants.PAGE;
+import static com.commerce.dscatalog.tests.Constants.SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static com.commerce.dscatalog.tests.Constants.PAGE;
-import static com.commerce.dscatalog.tests.Constants.SIZE;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +41,8 @@ import com.commerce.dscatalog.repositories.CategoryRepository;
 import com.commerce.dscatalog.repositories.ProductRepository;
 import com.commerce.dscatalog.services.exceptions.DatabaseException;
 import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
-
 import com.commerce.dscatalog.tests.Factory;
-
+import com.commerce.dscatalog.tests.TestProductProjection;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -152,7 +154,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void findAllPageShouldReturnPage() {		
+	public void findAllPageShouldReturnPage() {
 		ProductService productServiceSpy = Mockito.spy(productService);
 		Page<ProductDTO> result = productServiceSpy.findAllPaged(categoryId, nameProduct, pageable);
 		assertNotNull(result);
@@ -214,7 +216,7 @@ public class ProductServiceTests {
 	}
 
 	@Test
-	public void testCopyDtoToEntity() {
+	public void shouldValidadeTestCopyDtoToEntity() {
 		ProductDTO inputDto = new ProductDTO();
 		inputDto.setName("Test Product");
 		inputDto.setDescription("Test Description");
@@ -228,6 +230,52 @@ public class ProductServiceTests {
 		assertEquals(inputDto.getName(), entity.getName());
 		assertEquals(inputDto.getDescription(), entity.getDescription());
 		assertEquals(inputDto.getCategories().get(0).getName(), "Eletronics");
+	}
+
+	@Test
+	public void shouldFindAllPagedNoFilterNoMatchingProducts() {
+		String categoryId = "0";
+		String name = null;
+		Pageable pageable = Pageable.ofSize(10).withPage(0);
+
+		when(productRepository.searchProducts(anyList(), eq(null), eq(pageable)))
+				.thenReturn(new PageImpl<>(Arrays.asList()));
+
+		Page<ProductDTO> result = productService.findAllPaged(categoryId, name, pageable);
+
+		verify(productRepository).searchProducts(anyList(), eq(null), eq(pageable));
+
+		assertEquals(0, result.getTotalElements());
+	}
+
+	@Test
+	public void shouldFindAllPagedNoFilterMatchingProducts() {
+
+		String categoryId = "0";
+		String name = null;
+		Pageable pageable = Pageable.ofSize(10).withPage(0);
+
+		var p1 = new Product(1L, "Product 1");
+		var p2 = new Product(2L, "Product 2");
+
+		var productProjectionP1 = new TestProductProjection();
+		var productProjectionP2 = new TestProductProjection();
+
+		productProjectionP1.insertData(p1);
+		productProjectionP2.insertData(p2);
+
+		List<ProductProjection> productProjections = Arrays.asList(productProjectionP1, productProjectionP2);
+
+		when(productRepository.searchProducts(anyList(), eq(null), eq(pageable)))
+				.thenReturn(new PageImpl<>(productProjections));
+
+		when(productRepository.searchProductsWithCategories(anyList())).thenReturn(Arrays.asList(p1,p2));
+
+		Page<ProductDTO> result = productService.findAllPaged(categoryId, name, pageable);
+		verify(productRepository).searchProducts(anyList(), eq(null), eq(pageable));
+		verify(productRepository).searchProductsWithCategories(Arrays.asList(1L, 2L));
+
+		assertEquals(2, result.getTotalElements());
 	}
 
 }
