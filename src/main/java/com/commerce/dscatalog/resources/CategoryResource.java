@@ -3,6 +3,14 @@ package com.commerce.dscatalog.resources;
 import java.net.URI;
 import java.util.List;
 
+import com.commerce.dscatalog.resources.exceptions.StandardError;
+import com.commerce.dscatalog.services.exceptions.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +29,22 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.commerce.dscatalog.dto.CategoryDTO;
 import com.commerce.dscatalog.services.CategoryService;
 
+@Tag(name = "Categories", description = "Category Endpoints")
 @RestController
 @RequestMapping(value = "/categories")
 public class CategoryResource {
 
 	@Autowired
 	private CategoryService service;
-	
+
+	@Operation(
+			summary = "Retrieve all Categories",
+			description = "Get Categories object . The response is a List with object Category with id, name.",
+			tags = { "Categories", "get" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = CategoryDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = StandardError.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 	@GetMapping(value = "/list")
 	public ResponseEntity<List<CategoryDTO>> findAll() {
 		List<CategoryDTO> list = service.findAll();		
@@ -40,6 +57,14 @@ public class CategoryResource {
 		return ResponseEntity.ok().body(list);
 	}
 
+	@Operation(
+			summary = "Retrieve a Category by Id",
+			description = "Get a Category object by specifying its id. The response is Category object with id, name.",
+			tags = { "Categories", "get" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = CategoryDTO.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = StandardError.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
 		CategoryDTO dto = service.findById(id);

@@ -2,6 +2,7 @@ package com.commerce.dscatalog.resources;
 
 import java.net.URI;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import com.commerce.dscatalog.services.CityService;
 
 import jakarta.validation.Valid;
 
+@Tag(name = "Cities", description = "Cities Endpoints")
 @RestController
 @RequestMapping(value = "/cities")
 public class CityResource {
