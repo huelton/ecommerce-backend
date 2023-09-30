@@ -39,8 +39,7 @@ public class CategoryResource {
 
 	@Operation(
 			summary = "Retrieve all Categories",
-			description = "Get Categories object . The response is a List with object Category with id, name.",
-			tags = { "Categories", "get" })
+			description = "Get Categories object . The response is a List with object Category with id, name.")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = CategoryDTO.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = StandardError.class), mediaType = "application/json") }),
@@ -59,8 +58,7 @@ public class CategoryResource {
 
 	@Operation(
 			summary = "Retrieve a Category by Id",
-			description = "Get a Category object by specifying its id. The response is Category object with id, name.",
-			tags = { "Categories", "get" })
+			description = "Get a Category object by specifying its id. The response is Category object with id, name.")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = CategoryDTO.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema(implementation = StandardError.class), mediaType = "application/json") }),
